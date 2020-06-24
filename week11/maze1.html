@@ -1,0 +1,58 @@
+<style>
+    .cell {
+        width: 6px;
+        height: 6px;
+        border-bottom: 1px solid white;
+        border-right: 1px solid white;
+        display: inline-block;
+        vertical-align: middle;
+        background-color: gray;
+    }
+
+    #board {
+        width: 701px;
+    }
+</style>
+
+<body>
+    <div id="board"></div>
+    <button onclick="localStorage.map = JSON.stringify(map)">save</button>
+</body>
+<script>
+    var map = localStorage.map ? JSON.parse(localStorage.map) : new Array(10000).fill(0)
+
+    let board = document.getElementById("board")
+    for (let x = 0; x < 100; x++) {
+        for (let y = 0; y < 100; y++) {
+            let cell = document.createElement("div");
+            cell.classList.add("cell")
+
+            if(map[y*100+x] === 1)
+                cell.style.backgroundColor = 'black'
+
+            cell.addEventListener("mousemove", ()=>{
+                if(mouse){
+                    if(clear){
+                        cell.style.backgroundColor = ""
+                        map[y*100 + x] = 0;
+
+                    } else {
+                        cell.style.backgroundColor = "black"
+                        map[y*100 + x] = 1;
+                    }
+                    
+                }
+            })
+            board.appendChild(cell)
+        }
+    }
+    let mouse = false;
+    let clear = false;
+    document.addEventListener('mousedown', e=>{
+        mouse = true
+        clear = (e.which === 3) // right click
+    })
+    document.addEventListener('mouseup', ()=> mouse = false)
+
+    document.addEventListener('contextmenu', e=>e.preventDefault())
+</script>

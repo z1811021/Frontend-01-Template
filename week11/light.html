@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    #light div {
+        display: inline-block;
+        width: 100px;
+        height: 100px;
+        margin: 0 20px;
+        border-radius: 50%;
+        border: 1px solid;
+    }
+</style>
+
+<body>
+    <div id="light">
+        <div id="red"></div>
+        <div id="yellow"></div>
+        <div id="greenLight"></div>
+    </div>
+</body>
+<script>
+    function lightGreen() {
+        let greenLight = document.getElementById("greenLight")
+        greenLight.style.backgroundColor = "lightgreen";
+
+        let red = document.getElementById("red")
+        red.style.backgroundColor = "white";
+
+        let yellow = document.getElementById("yellow")
+        yellow.style.backgroundColor = "white";
+
+    }
+
+    function lightYellow() {
+        let yellow = document.getElementById("yellow")
+        yellow.style.backgroundColor = "yellow";
+
+        let greenLight = document.getElementById("greenLight")
+        greenLight.style.backgroundColor = "white";
+
+        let red = document.getElementById("red")
+        red.style.backgroundColor = "white";
+    }
+
+    function lightRed() {
+        let red = document.getElementById("red")
+        red.style.backgroundColor = "red";
+
+        let greenLight = document.getElementById("greenLight")
+        greenLight.style.backgroundColor = "white";
+
+        let yellow = document.getElementById("yellow")
+        yellow.style.backgroundColor = "white";
+    }
+
+    // function go() {
+    //     lightGreen()
+    //     setTimeout(()=>{lightYellow()}, 10000);
+    //     setTimeout(()=>{lightRed()}, 12000);
+    //     setTimeout(go(), 17000);
+    // }
+    // go()
+
+    function sleep(t) {
+        return new Promise((resolve, reject) => {
+            setTimeout(resolve, t)
+        })
+    }
+
+    // function go() {
+    //     lightGreen()
+    //     sleep(10000).then(() => {
+    //         lightYellow();
+    //         return sleep(2000)
+    //     }).then(() => {
+    //         lightRed();
+    //         return sleep(5000)
+    //     }).then(() => {
+    //         go();
+    //     })
+    // }
+    // go()
+
+
+    // async function go(){
+    //     lightGreen()
+    //     await sleep(10000)
+    //     lightYellow();
+    //     await sleep(2000)
+    //     lightRed();
+    //     await sleep(5000)
+    // }
+    // go()
+
+    function* go() {
+        while (true) {
+            lightGreen()
+            yield sleep(1000)
+            lightYellow();
+            yield sleep(200)
+            lightRed();
+            yield sleep(500)
+        }
+    }
+
+
+    function run(iterator) {
+        let {
+            value,
+            done
+        } = iterator.next()
+        if (done)
+            return
+        if (value instanceof Promise)
+            value.then(() => {
+                run(iterator)
+            })
+    }
+
+    function co(generator) {
+        return function () {
+            return run(generator())
+        }
+
+    }
+    go = co(go)
+    go()
+</script>
+
+</html>
